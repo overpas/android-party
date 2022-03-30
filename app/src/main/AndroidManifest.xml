@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="by.overpass.testio">
 
+	<uses-permission android:name="android.permission.INTERNET" />
+
 	<application
 		android:name=".App"
 		android:allowBackup="true"
@@ -14,6 +16,8 @@
 			android:name=".MainActivity"
 			android:exported="true"
 			android:label="@string/app_name"
+			android:windowSoftInputMode="adjustResize"
+			android:screenOrientation="portrait"
 			android:theme="@style/Theme.Testio">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

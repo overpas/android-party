@@ -27,9 +27,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Test
-        run: ./gradlew koverReport
-      - name: Submit report
-        run: |
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov -f "build/reports/kover/report.xml"
+        run: ./gradlew test
