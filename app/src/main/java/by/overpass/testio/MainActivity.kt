@@ -6,12 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import by.overpass.testio.login.ui.LoginScreen
 import by.overpass.testio.ui.theme.TestioTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalComposeUiApi
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,22 +26,19 @@ class MainActivity : ComponentActivity() {
 			TestioTheme {
 				// A surface container using the 'background' color from the theme
 				Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-					Greeting("Android")
+					TestioApp()
 				}
 			}
 		}
 	}
 }
 
+@ExperimentalComposeUiApi
 @Composable
-fun Greeting(name: String) {
-	Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-	TestioTheme {
-		Greeting("Android")
+fun TestioApp() {
+	val systemUiController = rememberSystemUiController()
+	SideEffect {
+		systemUiController.setStatusBarColor(Color.White)
 	}
+	LoginScreen(Modifier.fillMaxSize())
 }

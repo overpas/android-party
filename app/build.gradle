@@ -2,6 +2,8 @@ plugins {
 	id 'com.android.application'
 	id 'org.jetbrains.kotlin.android'
 	id "io.gitlab.arturbosch.detekt" version "$detekt_version"
+	id 'kotlin-kapt'
+	id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -14,7 +16,7 @@ android {
 		versionCode 1
 		versionName "1.0"
 
-		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+		testInstrumentationRunner "by.overpass.testio.HiltTestRunner"
 		vectorDrawables {
 			useSupportLibrary true
 		}
@@ -47,17 +49,28 @@ android {
 }
 
 dependencies {
-
 	implementation "androidx.core:core-ktx:$core_ktx_version"
 	implementation "androidx.compose.ui:ui:$compose_version"
 	implementation "androidx.compose.material:material:$compose_version"
 	implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-	implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime_ktx_version"
+	implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+	implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
 	implementation "androidx.activity:activity-compose:$activity_compose_version"
+	implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+	implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+	implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+	implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+	implementation "com.google.dagger:hilt-android:$hilt_version"
+	kapt "com.google.dagger:hilt-compiler:$hilt_version"
+	implementation "androidx.hilt:hilt-navigation-compose:$hilt_compose_version"
 	testImplementation "junit:junit:$junit_version"
+	testImplementation "org.mockito.kotlin:mockito-kotlin:$mockito_kotlin_version"
+	testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
 	debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 	androidTestImplementation "androidx.test.ext:junit:$test_ext_junit_version"
 	androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 	androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+	androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+	kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 	debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 }
