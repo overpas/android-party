@@ -3,13 +3,17 @@ package by.overpass.testio.ui.screens.login
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import by.overpass.testio.MainActivity
 import by.overpass.testio.domain.login.usecase.LoginUseCase
-import by.overpass.testio.login.ui.LoginScreen
+import by.overpass.testio.domain.servers.usecase.FetchServersUseCase
 import by.overpass.testio.presentation.login.CredentialsValidator
 import by.overpass.testio.presentation.login.LoginViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -17,10 +21,12 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import javax.inject.Inject
 
 @ExperimentalComposeUiApi
 @HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
 class LoginScreenTest {
 
 	@get:Rule
@@ -31,6 +37,9 @@ class LoginScreenTest {
 
 	@Inject
 	lateinit var loginUseCase: LoginUseCase
+
+	@Inject
+	lateinit var fetchServersUseCase: FetchServersUseCase
 
 	@Inject
 	lateinit var credentialsValidator: CredentialsValidator
@@ -45,26 +54,42 @@ class LoginScreenTest {
 		composeTestRule.setContent {
 			LoginScreen(
 				modifier = Modifier.fillMaxSize(),
-				viewModel = LoginViewModel(loginUseCase, credentialsValidator)
+				viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
 			)
 		}
 
 		composeTestRule.onNodeWithText("Username")
-			.assertExists()
+			.assertIsDisplayed()
 
 		composeTestRule.onNodeWithText("Password")
-			.assertExists()
+			.assertIsDisplayed()
 
 		composeTestRule.onNodeWithText("Log in")
-			.assertExists()
+			.assertIsDisplayed()
 	}
 
 	@Test
-	fun testLoginWithCorrectCredentialsWorks() {
+	fun testFieldErrorsDisplayedWhenLoggingInWithEmptyFields() {
 		composeTestRule.setContent {
 			LoginScreen(
 				modifier = Modifier.fillMaxSize(),
-				viewModel = LoginViewModel(loginUseCase, credentialsValidator)
+				viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
+			)
+		}
+
+		composeTestRule.onNodeWithText("Log in")
+			.performClick()
+
+		composeTestRule.onAllNodesWithText("This field shouldn't be empty")
+			.assertCountEquals(2)
+	}
+
+	@Test
+	fun testLoadingScreenShownWhenLoggingInWithValidCredentials() {
+		composeTestRule.setContent {
+			LoginScreen(
+				modifier = Modifier.fillMaxSize(),
+				viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
 			)
 		}
 
@@ -77,15 +102,15 @@ class LoginScreenTest {
 		composeTestRule.onNodeWithText("Log in")
 			.performClick()
 
-		// TODO: To be asserted that the success message is shown
+		// TODO: Check that login screen is opened
 	}
 
 	@Test
-	fun testLoginWithIncorrectCredentialsFails() {
+	fun testLoadingScreenShownWhenLoggingInWithInvalidCredentials() {
 		composeTestRule.setContent {
 			LoginScreen(
 				modifier = Modifier.fillMaxSize(),
-				viewModel = LoginViewModel(loginUseCase, credentialsValidator)
+				viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
 			)
 		}
 
@@ -98,6 +123,6 @@ class LoginScreenTest {
 		composeTestRule.onNodeWithText("Log in")
 			.performClick()
 
-		// TODO: To be asserted that the failure message is shown
+		// TODO: Check that login screen is opened
 	}
 }

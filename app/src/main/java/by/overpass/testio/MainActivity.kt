@@ -11,7 +11,11 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import by.overpass.testio.login.ui.LoginScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import by.overpass.testio.ui.screens.login.LoginScreen
+import by.overpass.testio.ui.screens.servers.ServersScreen
 import by.overpass.testio.ui.theme.TestioTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,5 +44,24 @@ fun TestioApp() {
 	SideEffect {
 		systemUiController.setStatusBarColor(Color.White)
 	}
-	LoginScreen(Modifier.fillMaxSize())
+	val navController = rememberNavController()
+	NavHost(navController = navController, startDestination = Destinations.LOGIN) {
+		composable(Destinations.LOGIN) {
+			LoginScreen(
+				modifier = Modifier.fillMaxSize(),
+				onNavigateToServers = {
+					navController.navigate(Destinations.SERVERS) {
+						popUpTo(Destinations.LOGIN) {
+							inclusive = true
+						}
+					}
+				}
+			)
+		}
+		composable(Destinations.SERVERS) {
+			ServersScreen(
+				modifier = Modifier.fillMaxSize(),
+			)
+		}
+	}
 }
