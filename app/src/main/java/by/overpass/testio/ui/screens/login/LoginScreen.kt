@@ -1,8 +1,7 @@
-package by.overpass.testio.login.ui
+package by.overpass.testio.ui.screens.login
 
 import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,79 +36,33 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import by.overpass.testio.R
-import by.overpass.testio.core.Failure
-import by.overpass.testio.core.SimpleResult
-import by.overpass.testio.core.Success
+import by.overpass.testio.presentation.login.LoginEvents
+import by.overpass.testio.presentation.login.LoginState
 import by.overpass.testio.presentation.login.LoginViewModel
+import by.overpass.testio.ui.screens.loading.LoadingScreen
 import by.overpass.testio.ui.theme.Gray
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 
 @ExperimentalComposeUiApi
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+	modifier: Modifier = Modifier,
+	viewModel: LoginViewModel = hiltViewModel(),
+	onNavigateToServers: () -> Unit = {},
+) {
 	LoginBackground(modifier)
-	Column(
-		horizontalAlignment = Alignment.CenterHorizontally,
-		verticalArrangement = Arrangement.Center,
-		modifier = modifier
-			.padding(start = 60.dp, end = 60.dp),
-	) {
-		LogoLight()
-		Spacer(modifier = Modifier.height(100.dp))
-
-		val validationResult by viewModel.validationResult.collectAsState()
-
-		LoginMessage(viewModel.loginEvent)
-
-		val username by viewModel.username.collectAsState()
-		LoginTextField(
-			label = stringResource(R.string.login_label_username),
-			value = username,
-			leadingIconRes = R.drawable.ic_username,
-			modifier = Modifier.fillMaxWidth(),
-			imeAction = ImeAction.Next,
-			isError = validationResult.usernameError,
-			onValueChange = {
-				viewModel.setUsername(it)
-			}
+	val state by viewModel.state.collectAsState()
+	if (state.isLoading) {
+		LoadingScreen(modifier)
+	} else {
+		LoginContent(
+			modifier = modifier,
+			viewModel = viewModel,
+			state = state,
 		)
-
-		val password by viewModel.password.collectAsState()
-		val keyboardController = LocalSoftwareKeyboardController.current
-		Spacer(modifier = Modifier.height(12.dp))
-		LoginTextField(
-			label = stringResource(R.string.login_label_password),
-			value = password,
-			leadingIconRes = R.drawable.ic_lock,
-			modifier = Modifier.fillMaxWidth(),
-			visualTransformation = PasswordVisualTransformation(),
-			imeAction = ImeAction.Done,
-			keyboardActions = KeyboardActions(
-				onDone = {
-					viewModel.login()
-					keyboardController?.hide()
-				},
-			),
-			isError = validationResult.passwordError,
-			onValueChange = {
-				viewModel.setPassword(it)
-			}
-		)
-
-		Spacer(modifier = Modifier.height(12.dp))
-		Button(
-			onClick = {
-				viewModel.login()
-				keyboardController?.hide()
-			},
-			modifier = Modifier
-				.fillMaxWidth()
-				.height(50.dp),
-		) {
-			Text(text = stringResource(R.string.login_button))
-		}
 	}
+	LoginEvents(viewModel.loginEvents, onNavigateToServers)
 }
 
 @Composable
@@ -122,6 +75,71 @@ fun LoginBackground(modifier: Modifier = Modifier) {
 	)
 }
 
+@ExperimentalComposeUiApi
+@Composable
+fun LoginContent(
+	state: LoginState,
+	viewModel: LoginViewModel,
+	modifier: Modifier = Modifier,
+) {
+	Column(
+		horizontalAlignment = Alignment.CenterHorizontally,
+		verticalArrangement = Arrangement.Center,
+		modifier = modifier
+			.padding(start = 60.dp, end = 60.dp),
+	) {
+		LogoLight()
+		Spacer(modifier = Modifier.height(100.dp))
+
+		val validationResult = state.validationResult
+
+		val username = state.username
+		LoginTextField(
+			label = stringResource(R.string.login_label_username),
+			value = username,
+			leadingIconRes = R.drawable.ic_username,
+			modifier = Modifier.fillMaxWidth(),
+			imeAction = ImeAction.Next,
+			isError = validationResult.usernameError,
+			onValueChange = {
+				viewModel.setUsername(it)
+			}
+		)
+
+		val password = state.password
+		val keyboardController = LocalSoftwareKeyboardController.current
+		Spacer(modifier = Modifier.height(12.dp))
+		LoginTextField(
+			label = stringResource(R.string.login_label_password),
+			value = password,
+			leadingIconRes = R.drawable.ic_lock,
+			modifier = Modifier.fillMaxWidth(),
+			visualTransformation = PasswordVisualTransformation(),
+			imeAction = ImeAction.Done,
+			keyboardActions = KeyboardActions(
+				onDone = {
+					viewModel.tryLogin()
+					keyboardController?.hide()
+				},
+			),
+			isError = validationResult.passwordError,
+			onValueChange = {
+				viewModel.setPassword(it)
+			}
+		)
+
+		Spacer(modifier = Modifier.height(12.dp))
+		LoginButton(
+			modifier = Modifier
+				.fillMaxWidth()
+				.height(50.dp),
+		) {
+			viewModel.tryLogin()
+			keyboardController?.hide()
+		}
+	}
+}
+
 @Composable
 fun LogoLight(modifier: Modifier = Modifier) {
 	Image(
@@ -132,16 +150,17 @@ fun LogoLight(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LoginMessage(loginEvent: Flow<SimpleResult>) {
+fun LoginEvents(loginEvents: Flow<LoginEvents>, onNavigateToServers: () -> Unit) {
 	val context = LocalContext.current
 	LaunchedEffect(Unit) {
-		loginEvent.collect {
-			@StringRes
-			val messageRes = when (it) {
-				is Success -> R.string.login_success_message
-				is Failure -> R.string.login_error_message
+		loginEvents.collect {
+			when (it) {
+				LoginEvents.SERVERS_FETCHED -> onNavigateToServers()
+
+				LoginEvents.LOGIN_ERROR     -> {
+					Toast.makeText(context, R.string.login_error_message, Toast.LENGTH_LONG).show()
+				}
 			}
-			Toast.makeText(context, messageRes, Toast.LENGTH_LONG).show()
 		}
 	}
 }
@@ -195,5 +214,15 @@ fun LoginTextField(
 				color = MaterialTheme.colors.error,
 			)
 		}
+	}
+}
+
+@Composable
+fun LoginButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+	Button(
+		onClick = onClick,
+		modifier = modifier,
+	) {
+		Text(text = stringResource(R.string.login_button))
 	}
 }

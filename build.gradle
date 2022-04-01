@@ -17,6 +17,7 @@ buildscript {
 		hilt_compose_version = '1.0.0'
 		mockito_kotlin_version = '4.0.0'
 		coroutines_test_version = '1.6.0'
+		room_version = '2.4.2'
 	}
 	dependencies {
 		classpath 'com.google.dagger:hilt-android-gradle-plugin:2.38.1'

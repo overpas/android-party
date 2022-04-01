@@ -7,7 +7,6 @@ import by.overpass.testio.data.dto.UserData
 import by.overpass.testio.domain.login.entity.UserCredentials
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -34,7 +33,7 @@ class AuthRepositoryImplTest {
 	}
 
 	@Test
-	fun `result is Failure when login unsuccessful`() = runTest {
+	fun `result is Failure when login unsuccessful with 401`() = runTest {
 		val userCredentials = UserCredentials("username", "password")
 		whenever(authTestioApi.login(UserData("username", "password"))).thenAnswer {
 			throw HttpException(
@@ -48,5 +47,20 @@ class AuthRepositoryImplTest {
 		val result = authRepository.login(userCredentials)
 
 		assertTrue(result is Failure)
+	}
+
+	@Test(expected = HttpException::class)
+	fun `result is Failure when login unsuccessful with 404`() = runTest {
+		val userCredentials = UserCredentials("username", "password")
+		whenever(authTestioApi.login(UserData("username", "password"))).thenAnswer {
+			throw HttpException(
+				Response.error<String>(
+					404,
+					"{}".toResponseBody(),
+				),
+			)
+		}
+
+		authRepository.login(userCredentials)
 	}
 }

@@ -6,4 +6,5 @@
 	<string name="login_field_empty">This field shouldn\'t be empty</string>
 	<string name="login_success_message">Login success</string>
 	<string name="login_error_message">Something went wrong. Try again later</string>
+	<string name="loading_message">Fetching the list…</string>
 </resources>
