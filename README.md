@@ -1,6 +1,7 @@
 ## Testio
 [![Static analysis](https://github.com/overpas/android-party/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/overpas/android-party/actions/workflows/static-analysis.yml)
 [![Test](https://github.com/overpas/android-party/actions/workflows/test.yml/badge.svg)](https://github.com/overpas/android-party/actions/workflows/test.yml)
+
 A simple Android app that displays a list of servers. Remember, this is just a test project!
 
 ### Features
