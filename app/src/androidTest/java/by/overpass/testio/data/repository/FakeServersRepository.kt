@@ -8,7 +8,6 @@ import javax.inject.Inject
 class FakeServersRepository @Inject constructor() : ServersRepository {
 
 	override suspend fun getAllServers(): List<Server> {
-		delay(200)
 		return listOf(Server("server", 1.0))
 	}
 }

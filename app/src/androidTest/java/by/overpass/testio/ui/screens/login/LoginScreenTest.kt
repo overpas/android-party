@@ -16,6 +16,7 @@ import by.overpass.testio.domain.login.usecase.LoginUseCase
 import by.overpass.testio.domain.servers.usecase.FetchServersUseCase
 import by.overpass.testio.presentation.login.CredentialsValidator
 import by.overpass.testio.presentation.login.LoginViewModel
+import by.overpass.testio.ui.theme.TestioTheme
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -52,10 +53,12 @@ class LoginScreenTest {
 	@Test
 	fun testUsernameAndPasswordFieldsAndLoginButtonExist() {
 		composeTestRule.setContent {
-			LoginScreen(
-				modifier = Modifier.fillMaxSize(),
-				viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
-			)
+			TestioTheme {
+				LoginScreen(
+					modifier = Modifier.fillMaxSize(),
+					viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
+				)
+			}
 		}
 
 		composeTestRule.onNodeWithText("Username")
@@ -71,10 +74,12 @@ class LoginScreenTest {
 	@Test
 	fun testFieldErrorsDisplayedWhenLoggingInWithEmptyFields() {
 		composeTestRule.setContent {
-			LoginScreen(
-				modifier = Modifier.fillMaxSize(),
-				viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
-			)
+			TestioTheme {
+				LoginScreen(
+					modifier = Modifier.fillMaxSize(),
+					viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
+				)
+			}
 		}
 
 		composeTestRule.onNodeWithText("Log in")
@@ -87,10 +92,12 @@ class LoginScreenTest {
 	@Test
 	fun testLoadingScreenShownWhenLoggingInWithValidCredentials() {
 		composeTestRule.setContent {
-			LoginScreen(
-				modifier = Modifier.fillMaxSize(),
-				viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
-			)
+			TestioTheme {
+				LoginScreen(
+					modifier = Modifier.fillMaxSize(),
+					viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
+				)
+			}
 		}
 
 		composeTestRule.onNodeWithText("Username")
@@ -108,10 +115,12 @@ class LoginScreenTest {
 	@Test
 	fun testLoadingScreenShownWhenLoggingInWithInvalidCredentials() {
 		composeTestRule.setContent {
-			LoginScreen(
-				modifier = Modifier.fillMaxSize(),
-				viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
-			)
+			TestioTheme {
+				LoginScreen(
+					modifier = Modifier.fillMaxSize(),
+					viewModel = LoginViewModel(loginUseCase, fetchServersUseCase, credentialsValidator),
+				)
+			}
 		}
 
 		composeTestRule.onNodeWithText("Username")
