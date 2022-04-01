@@ -1,10 +1,20 @@
 <resources>
 	<string name="app_name">Testio</string>
+
+    <!-- Login screen -->
 	<string name="login_label_username">Username</string>
 	<string name="login_label_password">Password</string>
 	<string name="login_button">Log in</string>
 	<string name="login_field_empty">This field shouldn\'t be empty</string>
 	<string name="login_success_message">Login success</string>
 	<string name="login_error_message">Something went wrong. Try again later</string>
+
+	<!-- Loading screen -->
 	<string name="loading_message">Fetching the list…</string>
+
+	<!-- Servers screen -->
+	<string name="servers_logout">Logout</string>
+	<string name="servers_header_server">SERVER</string>
+	<string name="servers_header_distance">DISTANCE</string>
+	<string name="servers_server_distance">%d km</string>
 </resources>

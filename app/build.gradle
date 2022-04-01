@@ -44,6 +44,8 @@ android {
 	packagingOptions {
 		resources {
 			excludes += '/META-INF/{AL2.0,LGPL2.1}'
+			excludes += '**/attach_hotspot_windows.dll'
+			excludes += 'META-INF/licenses/**'
 		}
 	}
 }
@@ -78,4 +80,5 @@ dependencies {
 	androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
 	kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 	debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+	androidTestImplementation "org.mockito:mockito-android:$mockito_android_version"
 }

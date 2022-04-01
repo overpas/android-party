@@ -61,6 +61,13 @@ fun TestioApp() {
 		composable(Destinations.SERVERS) {
 			ServersScreen(
 				modifier = Modifier.fillMaxSize(),
+				onLogout = {
+					navController.navigate(Destinations.LOGIN) {
+						popUpTo(Destinations.SERVERS) {
+							inclusive = true
+						}
+					}
+				}
 			)
 		}
 	}
