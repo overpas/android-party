@@ -16,7 +16,7 @@ buildscript {
 		hilt_version = '2.38.1'
 		hilt_compose_version = '1.0.0'
 		mockito_kotlin_version = '4.0.0'
-		coroutines_test_version = '1.6.0'
+		coroutines_test_version = '1.6.4'
 		room_version = '2.4.2'
 		mockito_android_version = '4.4.0'
 	}
