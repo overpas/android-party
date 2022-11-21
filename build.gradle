@@ -9,7 +9,7 @@ buildscript {
 		espresso_version = '3.4.0'
 		activity_compose_version = '1.4.0'
 		agp_version = '7.1.2'
-		detekt_version = '1.19.0'
+		detekt_version = '1.22.0'
 		accompanist_version = '0.23.1'
 		retrofit_version = '2.9.0'
 		okhttp_version = '4.9.3'
